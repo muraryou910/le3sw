@@ -1,5 +1,0 @@
-B _build/default/.main.eobjs
-B _build/default/src/.miniml.objs
-S .
-S src
-FLG -w -40
