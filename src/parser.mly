@@ -5,7 +5,7 @@ open Syntax
 %token LPAREN RPAREN SEMISEMI
 %token PLUS MULT LT AND OR
 %token IF THEN ELSE TRUE FALSE
-%token LET IN EQ
+%token LET IN EQ RARROW FUN
 
 %token <int> INTV
 %token <Syntax.id> ID
@@ -22,6 +22,8 @@ Expr :
     e=IfExpr { e }
   | e=LetExpr { e }
   | e=AndExpr { e }
+  | e=FunExpr { e }
+
    
 AndExpr :
     l=Expr AND r=Expr { BinOp(And, l, r) }
@@ -40,9 +42,13 @@ PExpr :
   | e=MExpr { e }
 
 MExpr :
-    l=MExpr MULT r=AExpr { BinOp (Mult, l, r) }
+    l=MExpr MULT r=AppExpr { BinOp (Mult, l, r) }
+  | e=AppExpr { e }
+
+AppExpr :
+    e1=AppExpr e2=AExpr { AppExp (e1, e2) }
   | e=AExpr { e }
-      
+   
 AExpr :
     i=INTV { ILit i }
   | TRUE   { BLit true }
@@ -55,6 +61,10 @@ IfExpr :
 
 LetExpr :   
     LET x=ID EQ e1=Expr IN e2=Expr { LetExp (x, e1, e2) }
+
+FunExpr :
+    FUN x=ID RARROW e=Expr { FunExp (x, e) }
+
    
 LetsExpr :
     LET x=ID EQ e=Expr { Decl(x, e) }
