@@ -11,9 +11,12 @@ type exp =
   | IfExp of exp * exp * exp
   | LetExp of id * exp * exp
 
+type env = (id*exp) list
+      
 type program =
     Exp of exp
   | Decl of id * exp
+  | Decls of id * exp * program
 
 type tyvar = int
 type ty =
@@ -22,3 +25,5 @@ type ty =
   | TyVar of tyvar
   | TyFun of ty * ty
   | TyList of ty
+
+

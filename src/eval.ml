@@ -48,7 +48,22 @@ let rec eval_exp env = function
      let value = eval_exp env exp1 in
      eval_exp (Environment.extend id value env) exp2
 
-let eval_decl env = function
+let for_decls env id1 e1 id2 env2 v2 =
+  Printf.printf "val %s = %s\n" id2 (string_of_exval v2);
+  let env1 = Environment.extend id2 v2 env2 in
+  let v1 = eval_exp env1 e1 in (id1, Environment.extend id1 v1 env2, v1)
+       
+let rec eval_decl env = function
     Exp e -> let v = eval_exp env e in ("-", env, v)
   | Decl (id, e) ->
      let v = eval_exp env e in (id, Environment.extend id v env, v)
+  | Decls (id, e, dec) ->
+     let (decid, decenv, decv) = eval_decl env dec in for_decls env id e decid decenv decv
+  
+  
+
+
+
+
+
+

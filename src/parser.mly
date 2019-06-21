@@ -16,13 +16,21 @@ open Syntax
 
 toplevel :
     e=Expr SEMISEMI { Exp e }
-  | LET x=ID EQ e=Expr SEMISEMI { Decl (x, e) }
-
+  | e=LetsExpr SEMISEMI { e }
+   
 Expr :
     e=IfExpr { e }
   | e=LetExpr { e }
-  | e=LTExpr { e }
-
+  | e=AndExpr { e }
+   
+AndExpr :
+    l=Expr AND r=Expr { BinOp(And, l, r) }
+  | e =OrExpr { e }
+   
+OrExpr :
+    l=Expr OR r=Expr { BinOp(Or, l, r) }
+  | e = LTExpr { e }
+   
 LTExpr :
     l=PExpr LT r=PExpr { BinOp (Lt, l, r) }
   | e=PExpr { e }
@@ -33,15 +41,7 @@ PExpr :
 
 MExpr :
     l=MExpr MULT r=AExpr { BinOp (Mult, l, r) }
-  | e=ANDExpr { e }
-
-ANDExpr :
-    l=Expr AND r=Expr { BinOp(And, l, r) }
-  | e =ORExpr { e }
-
-ORExpr :
-    l=Expr OR r=Expr { BinOp(Or, l, r) }
-  | e = AExpr { e }
+  | e=AExpr { e }
       
 AExpr :
     i=INTV { ILit i }
@@ -55,3 +55,8 @@ IfExpr :
 
 LetExpr :   
     LET x=ID EQ e1=Expr IN e2=Expr { LetExp (x, e1, e2) }
+   
+LetsExpr :
+    LET x=ID EQ e=Expr { Decl(x, e) }
+  | l=LetsExpr LET x=ID EQ e=Expr { Decls(x, e, l) }
+
