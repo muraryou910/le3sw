@@ -5,7 +5,7 @@ open Syntax
 %token LPAREN RPAREN SEMISEMI
 %token PLUS MULT LT AND OR
 %token IF THEN ELSE TRUE FALSE
-%token LET IN EQ RARROW FUN
+%token LET IN EQ RARROW FUN DFUN
 
 %token <int> INTV
 %token <Syntax.id> ID
@@ -64,7 +64,7 @@ LetExpr :
 
 FunExpr :
     FUN x=ID RARROW e=Expr { FunExp (x, e) }
-
+  | DFUN x=ID RARROW e=Expr { DFunExp (x, e) }
    
 LetsExpr :
     LET x=ID EQ e=Expr { Decl(x, e) }

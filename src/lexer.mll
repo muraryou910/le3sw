@@ -9,6 +9,7 @@ let reservedWords = [
   ("let", Parser.LET);
   ("in", Parser.IN);
   ("fun", Parser.FUN);
+  ("dfun", Parser.DFUN);
 ]
 }
 

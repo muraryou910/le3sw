@@ -11,6 +11,7 @@ type exp =
   | IfExp of exp * exp * exp
   | LetExp of id * exp * exp
   | FunExp of id * exp
+  | DFunExp of id * exp
   | AppExp of exp * exp
 
 type env = (id*exp) list
