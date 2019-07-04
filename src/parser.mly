@@ -25,7 +25,8 @@ Expr :
   | e=LetExpr { e }
   | e=AppendExpr { e }
   | e=FunExpr { e }
-
+  | e=MatchExpr { e }
+   
 AppendExpr :
     l=OrExpr CORONS r=AppendExpr { BinOp(App, l, r) }
   | e=OrExpr { e }
@@ -63,8 +64,13 @@ AExpr :
   | TRUE   { BLit true }
   | FALSE  { BLit false }
   | ENPBR { LLit }
+  | LBRCT e=ListExpr RBRCT { e }
   | i=ID   { Var i }
   | LPAREN e=Expr RPAREN { e }
+
+ListExpr :
+    hd=Expr SEMI tl=ListExpr { BinOp (App, hd, tl) }
+  | e=Expr { BinOp (App, e, LLit) }
 
 IfExpr :
     IF c=Expr THEN t=Expr ELSE e=Expr { IfExp (c, t, e) }
@@ -76,7 +82,12 @@ LetExpr :
 FunExpr :
     FUN x=ID RARROW e=Expr { FunExp (x, e) }
   | DFUN x=ID RARROW e=Expr { DFunExp (x, e) }
-   
+
+MatchExpr :
+    MATCH e1=Expr WITH ENPBR RARROW e2=Expr PARA hd=ID CORONS tl=ID RARROW e3=Expr { MatchExp (e1, e2, e3, hd, tl) }
+
+
+
 LetsExpr :
     LET REC x=ID EQ FUN p=ID RARROW e=Expr { RecDecl(x, p, e) }
   | LET x=ID EQ e=Expr { Decl(x, e) }

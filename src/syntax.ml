@@ -17,8 +17,8 @@ type exp =
   | FunExp of id * exp
   | DFunExp of id * exp
   | AppExp of exp * exp
+  | MatchExp of exp * exp * exp * id * id
 
-type env = (id*exp) list
       
 type program =
     Exp of exp

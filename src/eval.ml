@@ -97,6 +97,18 @@ let rec eval_exp env = function
      | DProcV (id, body) -> let newenv = Environment.extend id arg env in
 			    eval_exp newenv body
      | _ -> err ("Non-function value is applied"))
+  | MatchExp (test, exp1, exp2, hd, tl) ->(
+    match eval_exp env test with
+    | ListV -> eval_exp env exp1
+    | IListV [x] -> let newenv = Environment.extend hd(IntV x)(Environment.extend tl ListV env) in
+		   eval_exp newenv exp2
+    | IListV (x::rest) -> let newenv = Environment.extend hd(IntV x)(Environment.extend tl(IListV rest)env) in
+		         eval_exp newenv exp2
+    | BListV [x] -> let newenv = Environment.extend hd(BoolV x)(Environment.extend tl ListV env) in
+		   eval_exp newenv exp2
+    | BListV (x::rest) -> let newenv = Environment.extend hd(BoolV x)(Environment.extend tl(BListV rest)env) in
+			 eval_exp newenv exp2
+    | _ -> err ("Non-list value is applied"))
   | LetRecExp (id, para, exp1, exp2) ->
      let dummyenv = ref Environment.empty in
      let newenv = Environment.extend id (ProcV (para, exp1, dummyenv)) env in
